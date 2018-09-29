@@ -67,20 +67,27 @@ game.appendChild(grid);
 
 // For each item in the gameGrid array...
 gameGrid.forEach(item => {
-    // Create a div
+    // Create card element with the name dataset
     const card = document.createElement('div');
-
     // Apply a card class to that div
     card.classList.add('card');
-
     // Set the data-name attribute of the div to the gameGrid name
     card.dataset.name = item.name;
 
+    // Create a front of card
+    const front = document.createElement('div');
+    front.classList.add('front');
+
+    // Create back of card, which contains
+    const back = document.createElement('div');
+    back.classList.add('back');
     // Apply the background image of the div to the gameGrid image
-    card.style.backgroundImage = `url(${item.img})`;
+    back.style.backgroundImage = `url(${item.img})`;
 
     //Append the div to the grid section
     grid.appendChild(card);
+    card.appendChild(front);
+    card.appendChild(back);
 
 });
 
@@ -90,14 +97,20 @@ let secondGuess = '';
 let previousTarget = null;
 // initialize counter, set to 0;
 let count = 0;
-
+let delay = 1200;
 
 // Add event listener to grid
 grid.addEventListener('click', function(event) {
     // The event target is our clicked item
     let clicked = event.target;
 
-    if (clicked.nodeName === 'SECTION' || clicked === previousTarget) {
+    // check if previous if clicking card and not section,
+    // card selected, and check if aleardy match
+    if (clicked.nodeName === 'SECTION' ||
+        clicked === previousTarget ||
+        clicked.parentNode.classList.contains('selected') ||
+        clicked.parentNode.classList.contains('match')
+    ) {
         return;
     }
 
@@ -106,12 +119,14 @@ grid.addEventListener('click', function(event) {
         count++;
         if (count === 1) {
             // Assign first guess
-            firstGuess = clicked.dataset.name;
-            clicked.classList.add('selected');
+            firstGuess = clicked.parentNode.dataset.name;
+            console.log(firstGuess);
+            clicked.parentNode.classList.add('selected');
         } else {
             // Assign second second guess
-            secondGuess = clicked.dataset.name;
-            clicked.classList.add('selected');
+            secondGuess = clicked.parentNode.dataset.name;
+            console.log(secondGuess);
+            clicked.parentNode.classList.add('selected');
         }
 
         // If both guesses are not empty...
@@ -150,5 +165,3 @@ const resetGuesses = () => {
         card.classList.remove('selected');
     });
 };
-
-let delay = 1200;
