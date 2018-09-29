@@ -83,3 +83,72 @@ gameGrid.forEach(item => {
     grid.appendChild(card);
 
 });
+
+
+let firstGuess = '';
+let secondGuess = '';
+let previousTarget = null;
+// initialize counter, set to 0;
+let count = 0;
+
+
+// Add event listener to grid
+grid.addEventListener('click', function(event) {
+    // The event target is our clicked item
+    let clicked = event.target;
+
+    if (clicked.nodeName === 'SECTION' || clicked === previousTarget) {
+        return;
+    }
+
+
+    if (count < 2) {
+        count++;
+        if (count === 1) {
+            // Assign first guess
+            firstGuess = clicked.dataset.name;
+            clicked.classList.add('selected');
+        } else {
+            // Assign second second guess
+            secondGuess = clicked.dataset.name;
+            clicked.classList.add('selected');
+        }
+
+        // If both guesses are not empty...
+        if (firstGuess !== '' && secondGuess !== '') {
+            // and the first guess matches the second match...
+            if (firstGuess === secondGuess) {
+                // run the match function
+                setTimeout(match, delay);
+                setTimeout(resetGuesses, delay);
+            } else {
+                setTimeout(resetGuesses, delay);
+            }
+            previousTarget = clicked;
+        }
+    }
+
+});
+
+// Add match CSS
+const match = () => {
+    var selected = document.querySelectorAll('.selected');
+    selected.forEach(card => {
+        card.classList.add('match');
+    });
+}
+
+// reset guesses
+const resetGuesses = () => {
+    firstGuess = '';
+    secondGuess = '';
+    count = 0;
+    previousTarget = null;
+
+    var selected = document.querySelectorAll('.selected');
+    selected.forEach(card => {
+        card.classList.remove('selected');
+    });
+};
+
+let delay = 1200;
